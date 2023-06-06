@@ -28,7 +28,7 @@
 
 ```shell
 ./VPN_linux_amd64 -h                                 
-Usage of /tmp/go-build2269393005/b001/exe/main:
+Usage of VPN_linux_amd64:
   -c    check target vuln.(default) (default true)
   -e    change user's password.
   -p string
