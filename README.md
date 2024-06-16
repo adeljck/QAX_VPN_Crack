@@ -6,21 +6,21 @@
 
 2.使用charset插件修改网页编码为utf-8使页面正常显示
 
-![](pics\2.png)
+![](pics/2.png)
 
 3.获取到用户名信息.
 
-![](pics\3.png)
+![](pics/3.png)
 
 4.使用hackbar对地址/changepass.php?type=2发送修改密码数据,并将cookie值修改为如下，this_name为你需要修改密码的用户名称.
 
-![](pics\4.png)
+![](pics/4.png)
 
-![](pics\5.png)
+![](pics/5.png)
 
 5.返回修改密码成功.可能会提示密码强度不够可以尝试随机生成字符串来生成。
 
-![](pics\6.png)
+![](pics/6.png)
 
 # 2.工具使用
 
