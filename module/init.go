@@ -9,7 +9,7 @@ import (
 
 var (
 	V                  vpnConnect
-	getUserListPath    = "/admin/group/x_group.php?id=1"
+	getUserListPath    = "/admin/group/x_group.php?id="
 	changePasswordPath = "/changepass.php?type=2"
 	password           string
 )

