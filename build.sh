@@ -14,12 +14,12 @@ upx -9 VPN_windows_arm64.exe
 upx -9 VPN_darwin_amd64
 upx -9 VPN_darwin_arm64
 
-zip VPN_linux_amd64.zip VPN_linux_amd64 config.yaml
-zip VPN_windows_386.zip VPN_windows_386.exe config.yaml
-zip VPN_windows_amd64.zip VPN_windows_amd64.exe config.yaml
-zip VPN_windows_arm64.zip VPN_windows_arm64.exe config.yaml
-zip VPN_darwin_amd64.zip VPN_darwin_amd64 config.yaml
-zip VPN_darwin_arm64.zip VPN_darwin_arm64 config.yaml
+zip VPN_linux_amd64.zip VPN_linux_amd64
+zip VPN_windows_386.zip VPN_windows_386.exe
+zip VPN_windows_amd64.zip VPN_windows_amd64.exe
+zip VPN_windows_arm64.zip VPN_windows_arm64.exe
+zip VPN_darwin_amd64.zip VPN_darwin_amd64
+zip VPN_darwin_arm64.zip VPN_darwin_arm64
 
 rm -f VPN_linux_amd64
 rm -f VPN_windows_386.exe
